@@ -1,9 +1,13 @@
-getAllPathways<-function(include_genes=F, loadPresaved=F){
+getAllPathways<-function(include_genes=F, loadPresaved=F, path2Presaved=NULL){
   if(loadPresaved){
-    if(isempty( grep('linux', R.Version()$os))){
-      load("~/Projects/GenHetAcrossCancers/data/Pathways/REACTOME/Pathway_GeneSets_Reactome.RObj")
+    if(!is.null(path2Presaved)){
+	load(path2Presaved)
     }else{
-      load("/mnt/ix2/nandor/Projects/GenHetAcrossCancers/data/Pathways/REACTOME/Pathway_GeneSets_Reactome.RObj")
+	if(isempty( grep('linux', R.Version()$os))){
+		load("~/Projects/code/RCode/github/Utils/Pathways/Pathway_GeneSets_Reactome.RObj")
+    	}else{
+     		load("/mnt/ix2/nandor/Projects/GenHetAcrossCancers/data/Pathways/REACTOME/Pathway_GeneSets_Reactome.RObj")
+    	}
     }
     pathways <- gs
   }else{
