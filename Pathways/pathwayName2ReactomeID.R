@@ -1,4 +1,4 @@
-pathwayName2ReactomeID<-function(targets, pnames, verbose=T){
+pathwayName2ReactomeID<-function(targets, pnames){
   library("stringdist"); 
   ids=rep(NA, length(targets));   names(ids)=tolower(targets)
   
@@ -14,14 +14,10 @@ pathwayName2ReactomeID<-function(targets, pnames, verbose=T){
     
     ids[tolower(x)]=pnames$`Event Name`[apply(tmp,2,which.min)]
     print(paste("Found approximate matches for",sum(d<=10),"targets:"))
-    if(verbose){
-      print(ids[tolower(x)[d<=10]])
-    }
+    print(ids[tolower(x)[d<=10]])
     print(paste("Found no good matches for",sum(d>10),"targets:"))
-    if(verbose){
-      print(ids[tolower(x)[d>10]])
-    }
-    
+    print(ids[tolower(x)[d>10]])
+
     ids[tolower(x)]=pnames$ReactomeStableidentifier[apply(tmp,2,which.min)]
     ids[tolower(x)[d>10]]=NA
     
