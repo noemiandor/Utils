@@ -1,6 +1,6 @@
-annotatePathwayCategories<-function(targets, verbose=T){
-  pr=read.table("~/Projects/GenHetAcrossCancers/data/Pathways/REACTOME/ReactomePathwaysRelation.txt",sep="\t", stringsAsFactors = F)
-  pnames=read.table("~/Projects/GenHetAcrossCancers/data/Pathways/REACTOME/NCBI2Reactome_All_Levels_HSapiens.txt",sep="\t", comment.char = "", stringsAsFactors = F, check.names = F)
+annotatePathwayCategories<-function(targets, verbose=T, annotationFiles="~/Projects/code/RCode/github/Utils/Pathways"){
+  pr=read.table(paste0(annotationFiles,filesep,"ReactomePathwaysRelation.txt"),sep="\t", stringsAsFactors = F)
+  pnames=read.table(paste0(annotationFiles,filesep,"NCBI2Reactome_All_Levels_HSapiens.txt"),sep="\t", comment.char = "", stringsAsFactors = F, check.names = F)
   colnames(pnames)=c("SourceDBidentifier", "ReactomeStableidentifier","URL","Event Name","Evidence Code","Species")
   pnames=pnames[pnames$Species=="Homo sapiens",]
   pnames=pnames[!duplicated(pnames$ReactomeStableidentifier),]

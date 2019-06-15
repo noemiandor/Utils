@@ -1,4 +1,4 @@
-pathwayName2ReactomeID<-function(targets, pnamesm, verbose=T){
+pathwayName2ReactomeID<-function(targets, pnames, verbose=T){
   library("stringdist"); 
   ids=rep(NA, length(targets));   names(ids)=tolower(targets)
   
