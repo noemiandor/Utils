@@ -13,12 +13,10 @@ pathwayName2ReactomeID<-function(targets, pnamesm, verbose=T){
     d=apply(tmp,2,min);    
     
     ids[tolower(x)]=pnames$`Event Name`[apply(tmp,2,which.min)]
-    print(paste("Found approximate matches for",sum(d<=10),"targets:"))
     if(verbose){
+      print(paste("Found approximate matches for",sum(d<=10),"targets:"))
       print(ids[tolower(x)[d<=10]])
-    }
-    print(paste("Found no good matches for",sum(d>10),"targets:"))
-    if(verbose){
+      print(paste("Found no good matches for",sum(d>10),"targets:"))
       print(ids[tolower(x)[d>10]])
     }
     
