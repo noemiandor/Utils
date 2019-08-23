@@ -263,3 +263,66 @@ intersect_Matlab <- function(A, B) {
   ib = match(x, B)
   return(list(ia = ia, ib = ib))
 }
+
+
+###Helper functions#####
+exploreClonalDynamics<-function(X, minFreq=0.04, animate=T, to=NA, by = 1){
+  FR=list();
+  if(is.na(to)){    to = length(X@out)  }
+  steps = unique(c(round(seq(2, to, by = by)), to))
+  for(time in steps){
+    inds=X@out[[time]]
+    ii=which(!is.na(inds), arr.ind = T)
+    genome=getGenome(inds[ii])
+    fr=plyr::count(unlist(genome))
+    fr=fr[sort(fr$freq,decreasing = T, index.return=T)$ix,]
+    fr$relfreq=fr$freq/sum(fr$freq)
+    rownames(fr)=as.character(fr$x)
+    FR[[time]]=fr[,c("relfreq","freq")]
+  }
+  successClones=unique(unlist(sapply(FR, function(x) rownames(x[x$relfreq>=minFreq,]))))
+  ploidyPerClone=apply(sapply(sapply(successClones,strsplit,""), as.numeric), 2, .calcPloidy)
+  ploidyPerClone=round(100*ploidyPerClone); 
+  names(ploidyPerClone)=successClones
+  # col=rainbow(length(successClones));
+  col=rainbow(10+max(1+ploidyPerClone-min(ploidyPerClone)))[1+ploidyPerClone-min(ploidyPerClone)];   #color by ploidy
+  names(col)=successClones
+  ploidyPerClone=sort(ploidyPerClone)
+  ##Include ancestor
+  successClones=c(paste(X@parms$B_genome,collapse = ""), successClones)
+  names(successClones)=successClones;
+  names(successClones)[1]="Ancestor";
+  ##Dendrogram
+  genomes=t(sapply(strsplit(successClones,""), as.numeric))
+  if(nrow(genomes)>2){
+    d=dist(genomes)
+    tr=ape::bionjs(d)
+    plot(tr,type="fan", cex=0.75, tip.color=c(col[tr$tip.label]))
+  }
+  ##Plot animation:
+  if(!animate){
+    steps=steps[length(steps)]
+  }
+  # maxFitness=max(sapply(X@out[ 2:length(X@out)], function(x) max(X@equations$getFitness(x), na.rm=T)))
+  maxFitness=max(sapply(X@out[ 2:to], function(x) max(getPloidy(x), na.rm=T)))
+  for(time in steps){
+    inds=X@out[[time]]
+    FR_ = FR[1:time]
+    idx = which(!sapply(FR_, is.null))
+    cpt=lapply(successClones, function(x) sapply(FR_[idx], function(fr) fr[x,"freq"]))
+    names(cpt)=successClones;
+    maxV=max(sapply(cpt, max, na.rm=T))
+    par(mfrow=c(1,2));
+    state=X@equations$isalive(inds)
+    # fit=state * X@equations$getFitness(inds); 
+    fit=state * getPloidy(inds); 
+    fit[fit<0]=0; fit[length(fit)]=maxFitness; ##Color range should be equal throughout
+    # fit[1]=0;
+    par(bg = 'gray'); image(fit,yaxt="n",xaxt="n",col = c("gray",fliplr(heat.colors(108)[25:108])));
+    plot(1,1,xlim=c(1,length(FR)), ylim=c(1,maxV), col="white", xlab="time", ylab="Clone size")
+    tmp=sapply(names(cpt), function(x) points(idx, unlist(cpt[[x]]), col=col[x], pch=20) )
+    # legend("topleft", as.character(1:length(successClones)), fill=col)
+    legend("topleft", as.character(unique(ploidyPerClone)/100), fill=col[names(ploidyPerClone[!duplicated(ploidyPerClone)])])
+  }
+  return(FR[[to]])
+}
