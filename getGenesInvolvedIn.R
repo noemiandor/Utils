@@ -3,11 +3,13 @@ getGenesInvolvedIn<-function(pathway, dbs="ReactomePA"){
   if("ReactomePA" %in% dbs){
     library(ReactomePA)
     library(igraph)
-    jpeg(filename = paste0("~/Downloads/",filesep,"tmp.jpg"), width=10.5, height=6.5, units="in", res=200)
-    tmp=try(viewPathway(pathway),silent=T)
-    dev.off()
-    if(class(tmp)!="try-error"){
-      goi=c(goi,V(tmp)$name)
+    p <- pathways("hsapiens", 'reactome')[[pathway]]
+    g <- try(pathwayGraph(p),silent=T)
+    if(class(g)!="try-error"){
+      gg <- igraph.from.graphNEL(g)
+      gg <- as.undirected(gg)
+      V(gg)$name <- sub("[^:]+:", "", V(gg)$name)
+      goi=c(goi,V(gg)$name)
     }
   }
   if("INPATH" %in% dbs){
