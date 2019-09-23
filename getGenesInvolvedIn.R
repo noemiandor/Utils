@@ -3,7 +3,7 @@ getGenesInvolvedIn<-function(pathways, dbs="ReactomePA"){
     allGoi=list()
     library(ReactomePA)
     library(igraph)
-    allP <- pathways("hsapiens", 'reactome')
+    allP = pathways("hsapiens", 'reactome');
     allP <- try(convertIdentifiers(allP, "symbol"),silent=T)
     for(pathway in pathways){
       goi=c()
