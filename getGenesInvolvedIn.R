@@ -1,4 +1,4 @@
-getGenesInvolvedIn<-function(pathways, dbs="ReactomePA"){
+getGenesInvolvedIn <- function(pathways, dbs="ReactomePA"){
   if("ReactomePA" %in% dbs){
     allGoi=list()
     library(ReactomePA)
