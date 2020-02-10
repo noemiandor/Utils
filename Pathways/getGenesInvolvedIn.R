@@ -4,15 +4,12 @@ getGenesInvolvedIn<-function(pathway, dbs="ReactomePA"){
     library(ReactomePA)
     library(igraph)
 
-    goi <- ReactomePA::viewPathway(pathway)$data$name
+    g <- try(ReactomePA::viewPathway(pathway))
     #p <- pathways("hsapiens", 'reactome')[[pathway]]
     #g <- try(pathwayGraph(p),silent=T)
-    #if(class(g)!="try-error"){
-    #  gg <- igraph.from.graphNEL(g)
-    #  gg <- as.undirected(gg)
-    #  V(gg)$name <- sub("[^:]+:", "", V(gg)$name)
-    #  goi=c(goi,V(gg)$name)
-    #}
+    if(class(g)!="try-error"){
+      goi = g$data$name
+    }
   }
   if("INPATH" %in% dbs){
     mydb = dbConnect(MySQL(), user='noemi', password='lala', dbname='INPATH')
