@@ -1,14 +1,14 @@
 getAllPathways<-function(include_genes=F, loadPresaved=F){
+  library(matlab)
   if(loadPresaved){
     if(isempty( grep('linux', R.Version()$os))){
       load("~/Projects/code/RCode/github/Utils/Pathways/Pathway_GeneSets_Reactome.RObj")
     }else{
-      load("/mnt/ix2/nandor/Projects/GenHetAcrossCancers/data/Pathways/REACTOME/Pathway_GeneSets_Reactome.RObj")
+      load("/mnt/ix1/Resources/data/Pathways/REACTOME/Pathway_GeneSets_Reactome.RObj")
     }
     pathways <- gs
   }else{
     library(ReactomePA)
-    library(matlab)
     xx <- as.list(reactome.db::reactomePATHID2NAME)
     tmp=sapply(xx,function(x) strsplit(x,": ")[[1]])
     tmp=tmp[sapply(tmp,"[[",1)=="Homo sapiens"]; ##Keep only pathways in human
