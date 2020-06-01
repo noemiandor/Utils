@@ -1,7 +1,7 @@
 ## Given a dataframe `dm` with genes as rows and an arbitrary number of columns, annotates each gene with information from biomart. 
 ## `join_id` specifies what type of gene-identifiers the raws of `dm` are (e.g. HUGO symbols, Entrez IDs, etc).
 
-annotateFromBioMart<-function(dm,join_id,excludeSex=F,GRCh=38, GOregex=NULL, mart=NULL, otherCoi=NULL, GOregex="cellular_component:integral to membrane,^membrane,*plasma membrane*,^outer membrane*,*extracell*") {
+annotateFromBioMart<-function(dm,join_id,excludeSex=F,GRCh=38, GOregex=NULL, mart=NULL, otherCoi=NULL){ GOregex="cellular_component:integral to membrane,^membrane,*plasma membrane*,^outer membrane*,*extracell*") {
 
   coi=unique(c(join_id,"ensembl_gene_id","entrezgene","hgnc_symbol" ,"affy_hg_u133a", "chromosome_name","start_position","end_position", otherCoi))
   library(biomaRt)
