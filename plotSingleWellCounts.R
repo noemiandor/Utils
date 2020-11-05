@@ -1,6 +1,5 @@
-plotSingleWellCounts <- function(f){
+plotSingleWellCounts <- function(f, MINCNT=20){
   library(xlsx)
-  MINCNT=20
   # f = "~/Downloads/Cell Sorter.xlsx"
   wb <- loadWorkbook(f)
   sheets <- names(getSheets(wb))
@@ -27,6 +26,6 @@ plotSingleWellCounts <- function(f){
   for(i in rows){
     G=sapply(cols, function(j) sapply(o, function(x) x[i,j]))
     clr = c("black","red")
-    sapply(colnames(G), function(j) plot(day, G[,j], pch=20, col =clr[1+(max(G[,j],na.rm=T)>=MINCNT)], type = "b", main=paste(i,j), ylim=c(0,max(10,max(G[,j], na.rm=T)))))
+    sapply(colnames(G), function(j) plot(day, G[,j], pch=20, col =clr[1+(G[which.max(day),j]>=MINCNT)], type = "b", main=paste(i,j), ylim=c(0,max(10,max(G[,j], na.rm=T)))))
   }
 }
