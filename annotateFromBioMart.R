@@ -1,9 +1,8 @@
 ## Given a dataframe `dm` with genes as rows and an arbitrary number of columns, annotates each gene with information from biomart. 
-## `join_id` specifies what type of gene-identifiers the raws of `dm` are (e.g. HUGO symbols, Entrez IDs, etc).
+## `join_id` specifies what type of gene-identifiers the rows of `dm` are (e.g. HUGO symbols, Entrez IDs, etc).
+annotateFromBioMart<-function(dm,join_id,excludeSex=F,GRCh=38, dataset="hsapiens_gene_ensembl", GOregex=NULL, mart=NULL, otherCoi=NULL){ #GOregex="cellular_component:integral to membrane,^membrane,*plasma membrane*,^outer membrane*,*extracell*") {
 
-annotateFromBioMart<-function(dm,join_id,excludeSex=F,GRCh=38, GOregex=NULL, mart=NULL, otherCoi=NULL){ #GOregex="cellular_component:integral to membrane,^membrane,*plasma membrane*,^outer membrane*,*extracell*") {
-
-  coi=unique(c(join_id,"ensembl_gene_id","entrezgene","hgnc_symbol" ,"affy_hg_u133a", "chromosome_name","start_position","end_position", otherCoi))
+  coi=unique(c(join_id,"ensembl_gene_id","entrezgene","hgnc_symbol" ,"chromosome_name","start_position","end_position", otherCoi)); #"affy_hg_u133a", 
   library(biomaRt)
   
   if(!is.null(GOregex)){
@@ -11,26 +10,26 @@ annotateFromBioMart<-function(dm,join_id,excludeSex=F,GRCh=38, GOregex=NULL, mar
   }
   
   if(GRCh==36){
-    ensembl=useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl" ,host="may2009.archive.ensembl.org")
+    ensembl=useMart("ENSEMBL_MART_ENSEMBL",dataset=dataset ,host="may2009.archive.ensembl.org")
   }else if (GRCh==37){
-    ensembl=try(useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl" ,host="feb2014.archive.ensembl.org"))
+    ensembl=try(useMart("ENSEMBL_MART_ENSEMBL",dataset=dataset ,host="feb2014.archive.ensembl.org"))
     if(class(ensembl)=="try-error"){
-      ensembl=useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl" ,host="grch37.ensembl.org")
+      ensembl=useMart("ENSEMBL_MART_ENSEMBL",dataset=dataset ,host="grch37.ensembl.org")
     }
   }else if(GRCh==38){   
     # ensembl = useEnsembl(biomart="ensembl",GRCh=NULL)
-    ensembl=try(useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl" ,host="dec2017.archive.ensembl.org"))
+    ensembl=try(useMart("ENSEMBL_MART_ENSEMBL",dataset=dataset ,host="dec2017.archive.ensembl.org"))
     if(class(ensembl)=="try-error"){
-      ensembl=try(useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl" ,host="aug2017.archive.ensembl.org"))
+      ensembl=try(useMart("ENSEMBL_MART_ENSEMBL",dataset=dataset ,host="aug2017.archive.ensembl.org"))
       if(class(ensembl)=="try-error"){
-        ensembl=useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl" ,host="grch38.ensembl.org")
+        ensembl=useMart("ENSEMBL_MART_ENSEMBL",dataset=dataset ,host="grch38.ensembl.org")
       }
     }
   }else{
     print(paste("GRCh",GRCh,"not supported. Only supporting GRCh=36, GRCh=37 or GRCh=38. Abborting."))
     return()
   }
-  mart = biomaRt::useDataset("hsapiens_gene_ensembl",mart=ensembl)
+  mart = biomaRt::useDataset(dataset,mart=ensembl)
   
   genes<-biomaRt::getBM( coi, mart=mart)
   ##Deal with GO terms/ categories of interest
