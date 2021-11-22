@@ -46,7 +46,7 @@ annotateFromBioMart<-function(dm,join_id,excludeSex=F,GRCh=38, dataset="hsapiens
     genes=genes[sort(unique(ii)),]
   }
   ##Done with GO
-  x=intersect_MatlabV(rownames(dm),genes[,join_id] );  ##All chromosomes
+  x=intersect_MatlabV(toupper(rownames(dm)),toupper(genes[,join_id]) );  ##All chromosomes
   dm=dm[x$ia,,drop=F];  genes=genes[x$ib,,drop=F]
   if(excludeSex){
     genes[,"chromosome_name"]=as.numeric(gsub("Y","24",gsub("X","23",genes[,"chromosome_name"])))
